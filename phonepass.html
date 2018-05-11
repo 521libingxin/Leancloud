@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			var phonelist = [{'username':'15524418631','password':'qaz741xsw258'},
+				{'username':'18304069878','password':'qaz123wsx456'},
+				{'username':'17097473775','password':'ghjk75369'},
+				{'username':'17188222721','password':'plkoij789'},
+				{'change':true},
+				{'username':'17166035141','password':'487jkl456'},
+				{'username':'17157584963','password':'wwwknej852369'},
+				{'username':'18782006813','password':'gjtql789'},
+				{'username':'15708428622','password':'7788521rt'},
+				{'change':true},
+				{'username':'15543410434','password':'4d5re1ggr5f'},
+				{'username':'18782018940','password':'8sd4f57dfd4'},
+				{'username':'13116805475','password':'45sd8f545sdf4s'},
+				{'username':'13116807419','password':'wrw445seef44'},
+				{'change':true},
+				{'username':'18702898893','password':'2345678hhh'},
+				{'username':'13136438468','password':'45s454sdfs54'},
+				{'username':'13116808914','password':'55s5s55se55d5'},
+				{'username':'13004294697','password':'dfgdertg78sdfsd'},
+				{'change':true},
+				{'username':'17095222054','password':'klslsss54578s'},
+				{'username':'18702890590','password':'545ssd548sdf'},
+				{'username':'17078854120','password':'sdfs544fsdf45'},
+				{'username':'15543014845','password':'3f1s5edfd15'},
+				{'change':true},
+				{'username':'13458583944','password':'sdjfksdj848'},
+				{'username':'17096802896','password':'7s7s6db92djf'},
+				{'username':'18781935703','password':'sd97d6d6d6dss'},
+				{'username':'13059889478','password':'8s8s7ej7fgf'},
+				{'change':true},
+				{'username':'15708423013','password':'9d9d9d8fkff'},
+				{'username':'13458584933','password':'sdfsdjfkskd'},
+				{'username':'15708425381','password':'qweuiqeuu333'},
+				{'change':true},
+				{'username':'13095804760','password':'jintianshi888'},
+				{'username':'13157093948','password':'74s48de2xcdd'},
+				{'username':'13458591735','password':'woqunalile'},
+				{'username':'13175731554','password':'g85236944512'},
+				{'username':'17199020486','password':'sfjsdfjsjsjfjd',},
+				{'change':true},
+				{'username':'15707473924','password':'iefsfsfjsjfd'},
+				{'username':'17056162448','password':'aaabbbccc'},
+				{'username':'15590520454','password':'sfesssssssefsw'},
+				{'username':'15708433509','password':'481564851515'},
+				{'change':true},
+				{'username':'15719405779','password':'15s1s5df4'},
+				{'username':'13458573038','password':'eeeeee12345'},
+				{'username':'15708469418','password':'1596235748'},
+				{'username':'15708400811','password':'133sdfghjkl'},
+				{'change':true},
+				{'username':'15719412771','password':'dd88dd88dd88'},
+				{'username':'15719412985','password':'789sss789sss'},
+				{'username':'13017745742','password':'wer7536985236'},
+				{'username':'13105877469','password':'qas525252'},
+				{'change':true},
+				{'username':'15584340597','password':'erty456789'},
+				{'username':'13136274851','password':'456789jkjkjk'},
+				{'username':'15719491879','password':'852369asas'},
+				{'username':'13175834184','password':'dfdf78945536'},
+				{'change':true},
+				{'username':'13024683221','password':'5d5d65sd'},
+				{'username':'17176830041','password':'8s8d8fgee'},
+				{'username':'13116841663','password':'jjjjj55555'},
+				{'username':'15543012049','password':'58f65f6'},
+				{'change':true},
+				{'username':'15504420904','password':'54664sss'},
+				{'username':'13024683954','password':'8s8s8s8s'},
+				{'username':'13095803467','password':'0zxcvbn0'},
+				{'username':'15543407859','password':'99sss99'},
+				{'change':true},
+				{'username':'15338085422','password':'5ssd7745s'},
+				{'username':'15323329419','password':'45s4f8sss'},
+				{'username':'15322235789','password':'8989895655'},
+				{'username':'15322235086','password':'sfefdfd54874'}];
+				
+			var phoneObj = {}
+			for(var i = 0; i < phonelist.length;i++){
+				if(phonelist[i].username){
+					phoneObj['N_'+phonelist[i].username] = phonelist[i].password
+				}
+			}
+			console.log(JSON.stringify(phoneObj));
+		</script>
+	</body>
+</html>

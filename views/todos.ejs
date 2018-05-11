@@ -1,0 +1,396 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Todo</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script>
+    	function format2(temS,t_obj){
+    		for(var i in t_obj){
+		  		temS = temS.replace(new RegExp("\\{" + i + "\\}", "g"), t_obj[i]);
+		  	}
+    		return temS;
+    	}
+    	var ajax = function(obj){
+				obj = {
+					url:obj.url || "",
+					method: obj.method || "POST",
+					data: obj.data || "",
+				    timeout: obj.timeout || 10000,
+					success:obj.success || function(){},
+					error:obj.error || function(){},
+				    async : obj.async == true || obj.async == undefined
+				};
+				console.log(obj);
+				obj.data = (function(data){
+			        var arr = [];
+			        for (var i in data) {
+			            arr.push(encodeURIComponent(i) + '=' + encodeURIComponent(data[i]));
+			        }
+			        return arr.join('&');
+			    })(obj.data);
+			    
+			    var requestDone = false;
+			    setTimeout(function(){
+			        requestDone = true;  
+			    }, obj.timeout);
+			    
+				$xmlhttp = new XMLHttpRequest();
+				function callback() {
+			        if ($xmlhttp.status == 200) {  //判断http的交互是否成功，200表示成功
+			            obj.success($xmlhttp.responseText);            //成功
+			        } else {
+			            obj.error($xmlhttp.status,$xmlhttp.statusText)    //失败
+			        }
+			    }
+			    if (obj.data !== '' && obj.method === 'get') {
+			        obj.url += obj.url.indexOf('?') == -1 ? '?' + obj.data : '&' + obj.data; 
+			    }
+			    $xmlhttp.open(obj.method, obj.url, obj.async);
+			    if (obj.method === 'post') {
+			        $xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			        $xmlhttp.send(obj.data);
+			    } else {
+			        $xmlhttp.send(null);
+			    }
+			    
+				if (obj.async === true){
+					$xmlhttp.onreadystatechange = function() {
+						if ($xmlhttp.readyState == 4 && !requestDone) {   //判断对象的状态是否交互完成
+			                callback();         //回调
+			           }
+					}
+				}else{
+					callback();
+				}
+			};
+    </script>
+		<script>
+			var tr_model = `
+				<tr onclick="clickhover({index},{checked})" class="tr_style_{checked} color_{style}">
+	    		<td>{index}</td>
+	    		<td>{phone}</td>
+	    		<td>{lotteryscore}</td>
+	    		<td><img src="http://7xsvxt.com1.z0.glb.clouddn.com/{username}.bmp?version{time}" /></td>
+	    		<td><img src="http://7xsvxt.com1.z0.glb.clouddn.com/{username}_p.bmp?version{time}" /></td>
+	    		<td>{jdscore}</td>
+	    		<td>{money}</td>
+	    		<td>{content}</td>
+	    		<td>{phonegetlist}</td>
+	    		<td><div style="display:none;">{mac}</div></td>
+	    		<td><a style="display:none;" onclick="remove('{objectid}')">删除</a></td>
+	    	</tr>
+			`;
+			var tr_end_model = `
+				<td></td>
+				<td></td>
+    		<td>{all_userscore}</td>
+    		<td>{all_lotteryscore}</td>
+    		<td>{all_phonescore}</td>
+    		<td>{all_jdscore}</td>
+    		<td>{all_money}</td>
+    		<td></td>
+    		<td></td>
+    		<td></td>
+    		<td></td>
+			`;
+			var updatemodel = `
+				<input type="hidden" name="objectid" value="{objectid}" />
+				<div>用户名：<input type="text" name="username" value="{username}" /></div>
+	      <div>积　分：<input type="text" name="userscore" value="{userscore}" /></div>
+	      <div>彩金卡：<input type="text" name="lotteryscore" value="{lotteryscore}" /></div>
+	      <div>电话卡：<input type="text" name="phonescore" value="{phonescore}" /></div>
+	      <div>京东卡：<input type="text" name="jdscore" value="{jdscore}" /></div>
+	      <div>现　金：<input type="text" name="money" value="{money}" /></div>
+	      <div>备　注：<input type="text" name="content" value="{content}" /></div>
+	      <div>电话表：<input type="text" name="phonegetlist" value="{phonegetlist}" /></div>
+	      <div>MC地址：<input type="number" name="macid" value="{macid}" /></div>
+	      <input type="submit" value="修改" />
+			`;
+			var checked = 0;
+			var all_userscore = 0;
+			var all_lotteryscore = 0;
+			var all_phonescore = 0;
+			var all_jdscore = 0;
+			var all_money = 0;
+		</script>
+  	<script>
+  		var mac1 = `
+  			var macstr = 'BA3B445AD388';
+				var imeistr = '863144202579399';
+				var imsistr = '460006227882287';
+  		`;
+  		var mac2 = `
+  			var macstr = 'E2B4B7963D16';
+				var imeistr = '863511092275520';
+				var imsistr = '460006347256241';
+  		`;
+  		var mac3 = `
+  			var macstr = '981A54C16DB8';
+				var imeistr = '867629988475776';
+				var imsistr = '460006287387598';
+  		`;
+  		var macObj = {
+  			'JS_13024683703':mac1,
+  			'JS_17896203878':mac1,
+  			'JS_17896206462':mac1,
+  			'JS_13024684421':mac1,
+  			'WQ_15524418731':mac1,
+  			'WQ_15524418631':mac1,
+  			'WQ_18741018270':mac1,
+  			'WQ_18304069878':mac1,
+  			'LD_15524418731':mac1,
+  			'LD_15524418631':mac1,
+  			'LD_18741018270':mac1,
+  			'LD_18304069878':mac1,
+  			'JS_13175748563':mac2,
+  			'JS_13175702764':mac2,
+  			'JS_13875461994':mac2,
+  			'JS_17176360615':mac2,
+  			'WQ_17185100437':mac2,
+  			'WQ_15273853984':mac2,
+  			'WQ_13136401828':mac2,
+  			'WQ_13105703401':mac2,
+  			'LD_15572510425':mac2,
+  			'LD_13004291410':mac2,
+  			'LD_13105841891':mac2,
+  			'LD_15678174863':mac2,
+  			'JS_13105704952':mac3,
+  			'JS_13875477304':mac3,
+  			'JS_15974074048':mac3,
+  			'JS_15273812544':mac3,
+  			'WQ_17896203878':mac3,
+  			'WQ_17896206462':mac3,
+  			'WQ_15504442944':mac3,
+  			'WQ_17069475075':mac3,
+  			'LD_17896203878':mac3,
+  			'LD_17896206462':mac3,
+  			'LD_13175803364':mac3,
+  			'LD_13017745070':mac3
+  		}
+  		var pwdObject = {"N_15524418631":"qaz741xsw258","N_18304069878":"qaz123wsx456","N_17097473775":"ghjk75369","N_17188222721":"plkoij789","N_17166035141":"487jkl456","N_17157584963":"wwwknej852369","N_18782006813":"gjtql789","N_15708428622":"7788521rt","N_15543410434":"4d5re1ggr5f","N_18782018940":"8sd4f57dfd4","N_13116805475":"45sd8f545sdf4s","N_13116807419":"wrw445seef44","N_18702898893":"2345678hhh","N_13136438468":"45s454sdfs54","N_13116808914":"55s5s55se55d5","N_13004294697":"dfgdertg78sdfsd","N_17095222054":"klslsss54578s","N_18702890590":"545ssd548sdf","N_17078854120":"sdfs544fsdf45","N_15543014845":"3f1s5edfd15","N_13458583944":"sdjfksdj848","N_17096802896":"7s7s6db92djf","N_18781935703":"sd97d6d6d6dss","N_13059889478":"8s8s7ej7fgf","N_15708423013":"9d9d9d8fkff","N_13458584933":"sdfsdjfkskd","N_15708425381":"qweuiqeuu333","N_13095804760":"jintianshi888","N_13157093948":"74s48de2xcdd","N_13458591735":"woqunalile","N_13175731554":"g85236944512","N_17199020486":"sfjsdfjsjsjfjd","N_15707473924":"iefsfsfjsjfd","N_17056162448":"aaabbbccc","N_15590520454":"sfesssssssefsw","N_15708433509":"481564851515","N_15719405779":"15s1s5df4","N_13458573038":"eeeeee12345","N_15708469418":"1596235748","N_15708400811":"133sdfghjkl","N_15719412771":"dd88dd88dd88","N_15719412985":"789sss789sss","N_13017745742":"wer7536985236","N_13105877469":"qas525252","N_15584340597":"erty456789","N_13136274851":"456789jkjkjk","N_15719491879":"852369asas","N_13175834184":"dfdf78945536","N_13024683221":"5d5d65sd","N_17176830041":"8s8d8fgee","N_13116841663":"jjjjj55555","N_15543012049":"58f65f6","N_15504420904":"54664sss","N_13024683954":"8s8s8s8s","N_13095803467":"0zxcvbn0","N_15543407859":"99sss99","N_15338085422":"5ssd7745s","N_15323329419":"45s4f8sss","N_15322235789":"8989895655","N_15322235086":"sfefdfd54874"}
+  	</script>
+  </head>
+  <body>
+  	<div>
+  		<input id="sendID" style="background:blue;" type="text" placeholder="请输入ID" />
+  		<button style="background:yellowgreen;" onclick="sendID()">已经完成</button>
+  		<br><br>
+  		<button onclick="sendemail()">发送邮件</button>
+	  	<div style="float:left">
+		    <h1>帐号积分列表</h1>
+		    <form action="/todos" method="POST">
+		      <div>用户名：<input type="text" name="username" /></div>
+		      <div>积　分：<input type="text" name="userscore" /></div>
+		      <div>彩金卡：<input type="text" name="lotteryscore" /></div>
+		      <div>电话卡：<input type="text" name="phonescore" /></div>
+		      <div>京东卡：<input type="text" name="jdscore" /></div>
+		      <div>现　金：<input type="text" name="money" /></div>
+		      <div>备　注：<input type="text" name="content" /></div>
+		      <input type="submit" value="新增" />
+		    </form>
+	    </div>
+	    <div style="float:right">
+	    	<h3>修改</h3>
+	    	<input id="searchinput" type="text" /><button onclick="searchphone()">查询</button>
+		    <form id="updatebox" action="/todos/update" method="POST">
+		      
+		    </form>
+	    </div>
+	    <div style="clear: both;"></div>
+    </div>
+    <div id="totalhtml"></div>
+    <div class="tablebox">
+	    <table>
+	    	<thead>
+		    	<tr>
+		    		<th>编　号</th>
+		    		<th>用户名</th>
+		    		<th>密　码</th>
+		    		<th>积　分</th>
+		    		<th>电话卡</th>
+		    		<th>京东卡</th>
+		    		<th>现　金</th>
+		    		<th>备　注</th>
+		    		<th>电话表</th>
+		    		<th>所　属</th>
+		    		<th>操　作</th>
+		    	</tr>
+	    	</thead>
+	    	<tbody id="tbodyhtml">
+	    		
+	    	</tbody>
+	    </table>
+    </div>
+    <script>
+    	var nowtime = (new Date()).getTime();
+    	function sendID(){
+    		var idname = document.getElementById('sendID').value;
+    		if(idname != ''){
+	    		ajax({
+							url : '/todos/sendID',
+							method:"post",
+							data:{objectId:idname},
+							success : function (response) {
+								if(JSON.parse(response).back == '成功'){
+									window.location.reload();
+								}
+							},
+							async:true,
+							error : function (status,statusText) {
+								console.log('status：' + status + 'statusText：' + statusText);
+							}
+					});
+    		}
+    	}
+    	function sendemail(){
+    		ajax({
+						url : '/todos/sendemail',
+						method:"get",
+						success : function (response) {
+							console.log(response);
+						},
+						async:true,
+						error : function (status,statusText) {
+							console.log('status：' + status + 'statusText：' + statusText);
+						}
+				});
+    	}
+			function remove(objectid){
+				ajax({
+					url : '/todos/remove',
+					method:"post",
+					success : function (response) {
+						if(JSON.parse(response).back == 'success'){
+							init();
+						}
+					},
+					async:true,
+					data:{objectId:objectid},
+					error : function (status,statusText) {
+						console.log('status：' + status + 'statusText：' + statusText);
+					}
+				});
+			};
+			function searchphone(){
+				var searchkey = document.getElementById("searchinput").value;
+				console.log(searchkey);
+				for(var i = 0;i < lists.length;i++){
+					if(searchkey == lists[i].username){
+						document.getElementById("updatebox").innerHTML = format2(updatemodel,{
+							'objectid':lists[i].objectId,
+							'username':lists[i].username,
+							'userscore':lists[i].userscore,
+							'lotteryscore':lists[i].lotteryscore,
+							'phonescore':lists[i].phonescore,
+							'jdscore':lists[i].jdscore,
+							'money':lists[i].money,
+							'content':lists[i].content,
+							'phonegetlist':lists[i].phonegetlist,
+							'macid':lists[i].macid
+						});
+					}
+				}
+			}
+			function clickhover(index,ischeck){
+				if(!ischeck){
+					checked = index;
+					pushhtml();
+				}
+			}
+			function sortbyname(a,b){
+				//return a.username.slice(3) - b.username.slice(3);
+				//return a.username.slice(0,1).charCodeAt() - b.username.slice(0,1).charCodeAt();
+				return a.macid - b.macid;
+			}
+			var lists;
+			init();
+			function init(){
+				ajax({
+						url : '/todos/getlist',
+						method:"get",
+						success : function (response) {
+							lists = JSON.parse(response).back.sort(sortbyname);
+							//lists = JSON.parse(response).back;
+							checked = 0;
+							pushhtml();
+							/*ajax({
+									url : '/todos/getmaclist',
+									method:"get",
+									success : function (response) {
+										console.log(response);
+									},
+									async:true,
+									error : function (status,statusText) {
+										console.log('status：' + status + 'statusText：' + statusText);
+									}
+							});*/
+						},
+						async:true,
+						error : function (status,statusText) {
+							console.log('status：' + status + 'statusText：' + statusText);
+						}
+				});
+			};
+			function gettime(timedata){
+				var today = (new Date()).getDate();
+				var updateTime = (new Date(parseInt(timedata))).getDate();
+				if(today == updateTime){
+					return "完成"
+				}else{
+					return "";
+				}
+			}
+			function pushhtml(){
+				all_userscore = 0;
+				all_lotteryscore = 0;
+				all_phonescore = 0;
+				all_jdscore = 0;
+				all_money = 0;
+				var pushstr = '';
+				console.log(lists);
+				for(var i = 0; i < lists.length; i++){
+					if(lists[i].username.indexOf('N_') > -1){
+						//all_userscore = all_userscore.add(lists[i].userscore);
+						all_userscore += parseFloat(lists[i].userscore);
+						all_lotteryscore += parseFloat(lists[i].lotteryscore);
+						all_phonescore += parseFloat(lists[i].phonescore);
+						all_jdscore += parseFloat(lists[i].jdscore);
+						all_money += parseFloat(lists[i].money);
+						pushstr += format2(tr_model,{
+							'style':lists[i].macid%2,
+							'index':i-38,
+							'checked':i-38 == checked,
+							'objectid':lists[i].objectId,
+							'phone':lists[i].username.split("N_")[1],
+							'username':lists[i].username,
+							'userscore':lists[i].userscore,
+							'lotteryscore':pwdObject[lists[i].username],
+							'phonescore':lists[i].phonescore,
+							'jdscore':lists[i].jdscore,
+							'money':lists[i].money,
+							'content':gettime(lists[i].content),
+							'mac':macObj[lists[i].username],
+								'phonegetlist':lists[i].phonegetlist,
+							'time':nowtime
+						});
+					}
+				}
+				pushstr += format2(tr_end_model,{
+					'all_userscore':all_userscore.toFixed(1),
+					'all_lotteryscore':all_lotteryscore.toFixed(1),
+					'all_phonescore':all_phonescore.toFixed(1),
+					'all_jdscore':all_jdscore.toFixed(1),
+					'all_money':all_money.toFixed(1)
+				});
+				document.getElementById("tbodyhtml").innerHTML = pushstr;
+				document.getElementById("totalhtml").innerHTML = '约合人民币：'+ 
+					(parseFloat(all_userscore.toFixed(1)*5/6000) +
+    			parseFloat(all_lotteryscore.toFixed(1)*3/4) + 
+    			parseFloat(all_phonescore.toFixed(1)) +
+    			parseFloat(all_jdscore.toFixed(1)) + 
+    			parseFloat(all_money.toFixed(1))).toFixed(1) + 
+    		'元'
+			}
+    </script>
+  </body>
+</html>

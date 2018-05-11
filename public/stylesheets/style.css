@@ -1,0 +1,28 @@
+body {
+  padding: 10px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #00b7ff;
+}
+td{
+	width:150px;
+	border: 1px solid #000; 
+}
+.tablebox{
+	height:400px;
+	overflow-y: auto;
+}
+table{
+	border-collapse:collapse;
+	text-align: center;
+}
+.color_0{
+	background:#ccc;
+}
+.color_1{
+	background:#eee;
+}
+.tr_style_true{
+	background:#bbb;
+}
