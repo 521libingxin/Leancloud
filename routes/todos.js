@@ -57,7 +57,7 @@ router.post('/', function(req, res, next) {
   var money = req.body.money;
   var todo = new Todo();
   todo.set('username', username == ''?'0':username);
-  todo.set('userscore', userscore == ''?'0':userscore);
+  todo.set('userscore', userscore == ''?'{}':JSON.parse(userscore));
   todo.set('lotteryscore', lotteryscore == ''?'0':lotteryscore);
   todo.set('phonescore', phonescore == ''?'0':phonescore);
   todo.set('jdscore', jdscore == ''?'0':jdscore);
@@ -82,7 +82,7 @@ router.post('/update', function(req, res, next) {
   
   var todo = AV.Object.createWithoutData('Todo', objectid);
   todo.set('username', username == ''?'0':username);
-  todo.set('userscore', userscore == ''?'0':userscore);
+  todo.set('userscore', userscore == ''?'{}':JSON.parse(userscore));
   todo.set('lotteryscore', lotteryscore == ''?'0':lotteryscore);
   todo.set('phonescore', phonescore == ''?'0':phonescore);
   todo.set('jdscore', jdscore == ''?'0':jdscore);

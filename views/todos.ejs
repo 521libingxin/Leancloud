@@ -77,7 +77,9 @@
 	    		<td>{content}</td>
 	    		<td>{phonegetlist}</td>
 	    		<td><div style="display:none;">{mac}</div></td>
-	    		<td><a style="display:none;" onclick="remove('{objectid}')">删除</a></td>
+	    		<td><a style="display:none;" onclick="remove('{objectid}')">删除</a>
+	    		<input type="button" onclick="addgroup({phone})" value="添加到分组" />
+	    		</td>
 	    	</tr>
 			`;
 			var tr_end_model = `
@@ -96,7 +98,9 @@
 			var updatemodel = `
 				<input type="hidden" name="objectid" value="{objectid}" />
 				<div>用户名：<input type="text" name="username" value="{username}" /></div>
-	      <div>积　分：<input type="text" name="userscore" value="{userscore}" /></div>
+	      <div>积　分：
+				<textarea>{userscore}</textarea>
+				</div>
 	      <div>彩金卡：<input type="text" name="lotteryscore" value="{lotteryscore}" /></div>
 	      <div>电话卡：<input type="text" name="phonescore" value="{phonescore}" /></div>
 	      <div>京东卡：<input type="text" name="jdscore" value="{jdscore}" /></div>
@@ -221,7 +225,41 @@
 	    	</tbody>
 	    </table>
     </div>
+    <div  class="tablebox">
+	    <input type="button" onclick="resetgroup()" value="重置分组" />
+	    <table>
+	    	<thead>
+		    	<tr>
+		    		<th>编　号</th>
+		    		<th>用户名</th>
+		    		<th>密　码</th>
+		    		<th>积　分</th>
+		    		<th>电话卡</th>
+		    		<th>京东卡</th>
+		    		<th>现　金</th>
+		    		<th>备　注</th>
+		    		<th>电话表</th>
+		    		<th>所　属</th>
+		    		<th>操　作</th>
+		    	</tr>
+	    	</thead>
+	    	<tbody id="tbodyhtmlmore">
+	    		
+	    	</tbody>
+	    </table>
+    </div>
     <script>
+    	var grouplist = !localStorage.grouplist ? ',' : localStorage.grouplist;
+    	function addgroup(phone){
+    		grouplist += "N_" + phone + ",";
+    		localStorage.grouplist = grouplist;
+    		console.log(grouplist);
+    	}
+    	function resetgroup(){
+    		localStorage.grouplist = '';
+    		grouplist = '';
+    		pushhtml();
+    	}
     	var nowtime = (new Date()).getTime();
     	function sendID(){
     		var idname = document.getElementById('sendID').value;
@@ -279,7 +317,7 @@
 						document.getElementById("updatebox").innerHTML = format2(updatemodel,{
 							'objectid':lists[i].objectId,
 							'username':lists[i].username,
-							'userscore':lists[i].userscore,
+							'userscore':JSON.stringify(lists[i].userscore),
 							'lotteryscore':lists[i].lotteryscore,
 							'phonescore':lists[i].phonescore,
 							'jdscore':lists[i].jdscore,
@@ -347,32 +385,61 @@
 				all_jdscore = 0;
 				all_money = 0;
 				var pushstr = '';
+				var pushstr2 = '';
 				console.log(lists);
 				for(var i = 0; i < lists.length; i++){
 					if(lists[i].username.indexOf('N_') > -1){
 						//all_userscore = all_userscore.add(lists[i].userscore);
-						all_userscore += parseFloat(lists[i].userscore);
+						//all_userscore += parseFloat(lists[i].userscore);
 						all_lotteryscore += parseFloat(lists[i].lotteryscore);
 						all_phonescore += parseFloat(lists[i].phonescore);
 						all_jdscore += parseFloat(lists[i].jdscore);
 						all_money += parseFloat(lists[i].money);
-						pushstr += format2(tr_model,{
-							'style':lists[i].macid%2,
-							'index':i-38,
-							'checked':i-38 == checked,
-							'objectid':lists[i].objectId,
-							'phone':lists[i].username.split("N_")[1],
-							'username':lists[i].username,
-							'userscore':lists[i].userscore,
-							'lotteryscore':pwdObject[lists[i].username],
-							'phonescore':lists[i].phonescore,
-							'jdscore':lists[i].jdscore,
-							'money':lists[i].money,
-							'content':gettime(lists[i].content),
-							'mac':macObj[lists[i].username],
-								'phonegetlist':lists[i].phonegetlist,
-							'time':nowtime
-						});
+						if(grouplist.indexOf(lists[i].username + ",") < 0){
+							pushstr += format2(tr_model,{
+								'style':lists[i].macid%2,
+								'index':i-38,
+								'checked':i-38 == checked,
+								'objectid':lists[i].objectId,
+								'phone':lists[i].username.split("N_")[1],
+								'username':lists[i].username,
+								'userscore':JSON.stringify(lists[i].userscore),
+								'lotteryscore':pwdObject[lists[i].username],
+								'phonescore':lists[i].phonescore,
+								'jdscore':lists[i].jdscore,
+								'money':lists[i].money,
+								'content':gettime(lists[i].content),
+								'mac':macObj[lists[i].username],
+									'phonegetlist':lists[i].phonegetlist,
+								'time':nowtime
+							});
+						}
+					}
+				}
+				var localStoragelist = grouplist.split(',');
+				for(var j = 0; j < localStoragelist.length; j++){
+					for(var i = 0; i < lists.length; i++){
+						if(lists[i].username.indexOf('N_') > -1){
+							if(localStoragelist[j] == lists[i].username){
+								pushstr2 += format2(tr_model,{
+									'style':lists[i].macid%2,
+									'index':i-38,
+									'checked':i-38 == checked,
+									'objectid':lists[i].objectId,
+									'phone':lists[i].username.split("N_")[1],
+									'username':lists[i].username,
+									'userscore':JSON.stringify(lists[i].userscore),
+									'lotteryscore':pwdObject[lists[i].username],
+									'phonescore':lists[i].phonescore,
+									'jdscore':lists[i].jdscore,
+									'money':lists[i].money,
+									'content':gettime(lists[i].content),
+									'mac':macObj[lists[i].username],
+										'phonegetlist':lists[i].phonegetlist,
+									'time':nowtime
+								});
+							}
+						}
 					}
 				}
 				pushstr += format2(tr_end_model,{
@@ -382,14 +449,22 @@
 					'all_jdscore':all_jdscore.toFixed(1),
 					'all_money':all_money.toFixed(1)
 				});
+				pushstr2 += format2(tr_end_model,{
+					'all_userscore':all_userscore.toFixed(1),
+					'all_lotteryscore':all_lotteryscore.toFixed(1),
+					'all_phonescore':all_phonescore.toFixed(1),
+					'all_jdscore':all_jdscore.toFixed(1),
+					'all_money':all_money.toFixed(1)
+				});
 				document.getElementById("tbodyhtml").innerHTML = pushstr;
-				document.getElementById("totalhtml").innerHTML = '约合人民币：'+ 
+				document.getElementById("tbodyhtmlmore").innerHTML = pushstr2;
+				/*document.getElementById("totalhtml").innerHTML = '约合人民币：'+ 
 					(parseFloat(all_userscore.toFixed(1)*5/6000) +
     			parseFloat(all_lotteryscore.toFixed(1)*3/4) + 
     			parseFloat(all_phonescore.toFixed(1)) +
     			parseFloat(all_jdscore.toFixed(1)) + 
     			parseFloat(all_money.toFixed(1))).toFixed(1) + 
-    		'元'
+    		'元'*/
 			}
     </script>
   </body>
